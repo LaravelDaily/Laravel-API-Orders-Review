@@ -31,13 +31,9 @@ class OrderController extends ApiController
      */
     public function index(OrderFilter $filter)
     {
-        try {
-            return response()->json(new OrderCollection(
-                Order::filter($filter)->paginate()
-            ), Response::HTTP_OK);
-        } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
-        }
+        return new OrderCollection(
+            Order::filter($filter)->paginate()
+        );
     }
 
     /**
@@ -55,7 +51,7 @@ class OrderController extends ApiController
 
             $order->load('products');
 
-            return response()->json(new OrderResource($order), Response::HTTP_OK);
+            return new OrderResource($order);
         } catch (ModelNotFoundException $eModelNotFound) {
             return $this->notFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
