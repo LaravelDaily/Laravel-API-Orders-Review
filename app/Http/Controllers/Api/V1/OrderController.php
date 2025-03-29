@@ -53,9 +53,9 @@ class OrderController extends ApiController
 
             return new OrderResource($order);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('Order not found');
+            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         }
     }
 
@@ -71,11 +71,11 @@ class OrderController extends ApiController
         } catch (QueryException $eQueryException) {
             DB::rollback(); // Rollback transaction on database error
 
-            return $this->dbError();
+            return $this->responseDbError();
         } catch (Throwable $eTh) {
             DB::rollback(); // Rollback transaction on any other error
 
-            return $this->unexpectedError();
+            return $this->responseUnexpectedError();
         }
     }
 
@@ -92,17 +92,17 @@ class OrderController extends ApiController
 
             return response()->json(new OrderResource($order), Response::HTTP_OK);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('Order not found');
+            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         } catch (QueryException $eQueryException) {
             DB::rollback(); // Rollback transaction on database error
 
-            return $this->dbError();
+            return $this->responseDbError();
         } catch (Throwable $eTh) {
             DB::rollback(); // Rollback transaction on any other error
 
-            return $this->unexpectedError();
+            return $this->responseUnexpectedError();
         }
     }
 
@@ -119,17 +119,17 @@ class OrderController extends ApiController
 
             return response()->json(new OrderResource($order), Response::HTTP_OK);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('Order not found');
+            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         } catch (QueryException $eQueryException) {
             DB::rollback(); // Rollback transaction on database error
 
-            return $this->dbError();
+            return $this->responseDbError();
         } catch (Throwable $eTh) {
             DB::rollback(); // Rollback transaction on any other error
 
-            return $this->unexpectedError();
+            return $this->responseUnexpectedError();
         }
     }
 
@@ -143,11 +143,11 @@ class OrderController extends ApiController
             $this->isAble('delete', $order); // policy
             $this->orderService->deleteOrderHandleProducts($order);
 
-            return $this->success('Order deleted successfully');
+            return $this->responseSuccess('Order deleted successfully');
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('Order not found');
+            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         }
     }
 }

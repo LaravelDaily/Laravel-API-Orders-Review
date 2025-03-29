@@ -20,7 +20,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (! Auth::attempt($credentials)) {
-            return $this->error([
+            return $this->responseError([
                 'email' => ['The provided credentials are incorrect.'],
                 'password' => ['The provided credentials are incorrect.'],
             ], 401);
@@ -29,7 +29,7 @@ class AuthController extends Controller
         $user = User::firstWhere('email', $request->email);
         $token = $user?->createToken('authToken', Abilities::getAbilities($user), now()->addHours(8))->plainTextToken;
 
-        return $this->success(
+        return $this->responseSuccess(
             'Authenticated',
             [
                 // 'user' => $user,
@@ -42,6 +42,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->success('Logged out');
+        return $this->responseSuccess('Logged out');
     }
 }

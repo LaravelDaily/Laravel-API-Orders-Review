@@ -40,9 +40,9 @@ class OwnerOrdersController extends ApiController
                 Order::where('user_id', $ownerId)->filter($filter)->paginate()
             ), Response::HTTP_OK);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('User not found');
+            return $this->responseNotFound('User not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         }
     }
 
@@ -63,9 +63,9 @@ class OwnerOrdersController extends ApiController
 
             return response()->json(new OrderResource($order), Response::HTTP_OK);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('User/Order not found');
+            return $this->responseNotFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         }
     }
 
@@ -80,17 +80,17 @@ class OwnerOrdersController extends ApiController
 
             return response()->json(new OrderResource($order), Response::HTTP_CREATED);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('User/Order not found');
+            return $this->responseNotFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         } catch (QueryException $eQueryException) {
             DB::rollback(); // Rollback transaction on database error
 
-            return $this->dbError();
+            return $this->responseDbError();
         } catch (Throwable $eTh) {
             DB::rollback(); // Rollback transaction on any other error
 
-            return $this->unexpectedError();
+            return $this->responseUnexpectedError();
         }
     }
 
@@ -112,11 +112,11 @@ class OwnerOrdersController extends ApiController
             $this->isAbleIsOwner('delete', $order, $ownerId); // policy
             $order->delete();
 
-            return $this->success('Order deleted successfully');
+            return $this->responseSuccess('Order deleted successfully');
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound('User/Order not found');
+            return $this->responseNotFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
-            return $this->notAuthorized();
+            return $this->responseNotAuthorized();
         }
     }
 }

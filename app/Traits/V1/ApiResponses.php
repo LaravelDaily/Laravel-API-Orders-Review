@@ -7,27 +7,27 @@ use Illuminate\Http\JsonResponse;
 
 trait ApiResponses
 {
-    public function notAuthorized(string $message = 'You are not authorized.'): JsonResponse
+    public function responseNotAuthorized(string $message = 'You are not authorized.'): JsonResponse
     {
-        return $this->error($message, Response::HTTP_UNAUTHORIZED);
+        return $this->responseError($message, Response::HTTP_UNAUTHORIZED);
     }
 
-    public function notFound(string $message = 'Not Found.'): JsonResponse
+    public function responseNotFound(string $message = 'Not Found.'): JsonResponse
     {
-        return $this->error($message, Response::HTTP_NOT_FOUND);
+        return $this->responseError($message, Response::HTTP_NOT_FOUND);
     }
 
-    public function unexpectedError(string $message = 'An unexpected error occurred.'): JsonResponse
+    public function responseUnexpectedError(string $message = 'An unexpected error occurred.'): JsonResponse
     {
-        return $this->error($message);
+        return $this->responseError($message);
     }
 
-    public function dbError(string $message = 'Database error.'): JsonResponse
+    public function responseDbError(string $message = 'Database error.'): JsonResponse
     {
-        return $this->error($message);
+        return $this->responseError($message);
     }
 
-    protected function success(string $message, array $data = [], int $statusCode = 200): JsonResponse
+    protected function responseSuccess(string $message, array $data = [], int $statusCode = 200): JsonResponse
     {
         return response()->json([
             'data' => $data,
@@ -36,7 +36,7 @@ trait ApiResponses
         ], $statusCode);
     }
 
-    protected function error($message, $statusCode = 500): JsonResponse
+    protected function responseError($message, int $statusCode = 500): JsonResponse
     {
         return response()->json([
             'errors' => $message,
