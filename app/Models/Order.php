@@ -26,7 +26,7 @@ class Order extends Model
             ->withTimestamps();
     }
 
-    public function scopeFilter( Builder $query, QueryFilter $filters ) 
+    public function scopeFilter(Builder $query, QueryFilter $filters)
     {
         return $filters->apply($query);
     }

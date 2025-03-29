@@ -19,7 +19,7 @@ class OwnerPolicy
      */
     public function view(User $authUser, User $owner): bool
     {
-        return $this->authIsOwner( $authUser, $owner );
+        return $this->authIsOwner($authUser, $owner);
     }
 
     /**
@@ -27,7 +27,7 @@ class OwnerPolicy
      */
     public function create(User $authUser, User $owner): bool
     {
-        return $this->authIsOwner( $authUser, $owner );
+        return $this->authIsOwner($authUser, $owner);
     }
 
     /**
@@ -35,7 +35,7 @@ class OwnerPolicy
      */
     public function update(User $authUser, User $owner): bool
     {
-        return $this->authIsOwner( $authUser, $owner );
+        return $this->authIsOwner($authUser, $owner);
     }
 
     /**
@@ -43,7 +43,7 @@ class OwnerPolicy
      */
     public function delete(User $authUser, User $owner): bool
     {
-        return $this->authIsOwner( $authUser, $owner );
+        return $this->authIsOwner($authUser, $owner);
     }
 
     /**
@@ -65,7 +65,7 @@ class OwnerPolicy
     /**
      * Determine whether the user is the Owner of the resources.
      */
-    public function authIsOwner(User $authUser, User $owner ): bool
+    public function authIsOwner(User $authUser, User $owner): bool
     {
         return $authUser->id === $owner->id;
     }

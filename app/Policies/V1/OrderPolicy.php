@@ -37,11 +37,12 @@ class OrderPolicy
      */
     public function update(User $authUser, Order $order): bool
     {
-        if ( $authUser->tokenCan(Abilities::Update_All_Orders) ) {
+        if ($authUser->tokenCan(Abilities::Update_All_Orders)) {
             return true;
-        } else if ( $authUser->tokenCan(Abilities::Update_Own_Order) ) {
+        } elseif ($authUser->tokenCan(Abilities::Update_Own_Order)) {
             return $this->orderOwner($authUser, $order) && $this->requestOwner($authUser);
         }
+
         return false;
     }
 
@@ -69,11 +70,10 @@ class OrderPolicy
         return false;
     }
 
-
     /**
      * Determine whether the user is the Owner of the resources.
      */
-    public function isOwner(User $authUser, User $owner ): bool
+    public function isOwner(User $authUser, User $owner): bool
     {
         return $authUser->id === $owner->id;
     }
@@ -81,7 +81,7 @@ class OrderPolicy
     /**
      * Determine whether the user is the Owner of the resources.
      */
-    public function orderOwner(User $authUser, Order $order ): bool
+    public function orderOwner(User $authUser, Order $order): bool
     {
         return $authUser->id === $order->user_id;
     }
@@ -90,6 +90,4 @@ class OrderPolicy
     {
         return request()->input('data.attributes.user_id') === $authUser->id;
     }
-
-
 }

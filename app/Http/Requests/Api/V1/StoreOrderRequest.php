@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Rules\V1\CreateOrderStockValidation;
-use Illuminate\Support\Facades\Auth;
 
 class StoreOrderRequest extends BaseOrderRequest
 {
@@ -28,14 +27,14 @@ class StoreOrderRequest extends BaseOrderRequest
             'data' => 'required|array',
             'data.attributes' => 'required|array',
             'data.relationships' => 'required|array',
-            
-            'data.attributes.user_id' => 'required|integer|exists:users,id|size:' . $user->id,
+
+            'data.attributes.user_id' => 'required|integer|exists:users,id|size:'.$user->id,
             'data.attributes.name' => 'required|string',
             'data.attributes.description' => 'required|string',
             'data.attributes.status' => 'required|string|in:P,F,C',
             'data.attributes.date' => 'required|date',
 
-            'data.relationships.products' => [ 'required', 'array', new CreateOrderStockValidation(), ],
+            'data.relationships.products' => ['required', 'array', new CreateOrderStockValidation],
 
             'data.relationships.products.*' => 'array',
             'data.relationships.products.*.id' => 'required|exists:products,id',
@@ -43,5 +42,4 @@ class StoreOrderRequest extends BaseOrderRequest
             'data.relationships.products.*.price' => 'required|numeric|min:0',
         ];
     }
-
 }

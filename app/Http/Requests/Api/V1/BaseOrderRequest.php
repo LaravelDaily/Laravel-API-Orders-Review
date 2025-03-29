@@ -20,14 +20,13 @@ class BaseOrderRequest extends FormRequest
 
         $attributesToUpdate = [];
         foreach ($attributeMap as $key => $attribute) {
-            if ( $this->has($key) ) {
+            if ($this->has($key)) {
                 $attributesToUpdate[$attribute] = $this->input($key);
             }
         }
 
         return $attributesToUpdate;
     }
-
 
     public function messages(): array
     {
@@ -55,5 +54,4 @@ class BaseOrderRequest extends FormRequest
             'data.relationships.products.*.price.min' => 'The products.price field must be at least 0.',
         ];
     }
-
 }

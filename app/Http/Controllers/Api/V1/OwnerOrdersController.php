@@ -24,28 +24,27 @@ class OwnerOrdersController extends ApiController
 
     protected $policyClass = OwnerPolicy::class;
 
-    public function __construct( 
-        protected OrdersService $orderService 
+    public function __construct(
+        protected OrdersService $orderService
     ) {}
-
 
     /**
      * Display a listing of the resource.
      */
-    public function index( $ownerId, OrderFilter $filter )
+    public function index($ownerId, OrderFilter $filter)
     {
         try {
-            $this->authIsOwner( $ownerId );
-            return response()->json( new OrderCollection(
-                Order::where('user_id', $ownerId)->filter( $filter )->paginate()
-            ), Response::HTTP_OK );
+            $this->authIsOwner($ownerId);
+
+            return response()->json(new OrderCollection(
+                Order::where('user_id', $ownerId)->filter($filter)->paginate()
+            ), Response::HTTP_OK);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound( 'User not found' );
+            return $this->notFound('User not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->notAuthorized();
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -54,22 +53,21 @@ class OwnerOrdersController extends ApiController
     {
         try {
             $order = Order::where('id', $orderId)->where('user_id', $ownerId)->firstOrFail();
-            $this->isAbleIsOwner('view', $order, $ownerId); //policy
+            $this->isAbleIsOwner('view', $order, $ownerId); // policy
 
-            if ( $this->include('user') ) {
+            if ($this->include('user')) {
                 $order->load('user');
             }
-            
+
             $order->load('products');
-    
-            return response()->json( new OrderResource($order), Response::HTTP_OK );
+
+            return response()->json(new OrderResource($order), Response::HTTP_OK);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound( 'User/Order not found' );
+            return $this->notFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->notAuthorized();
         }
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -77,22 +75,24 @@ class OwnerOrdersController extends ApiController
     public function store($ownerId, StoreOrderRequest $request)
     {
         try {
-            $this->authIsOwner( $ownerId );
-            $order = $this->orderService->createOrderHandleProducts( $request );
-            return response()->json( new OrderResource($order), Response::HTTP_CREATED );
+            $this->authIsOwner($ownerId);
+            $order = $this->orderService->createOrderHandleProducts($request);
+
+            return response()->json(new OrderResource($order), Response::HTTP_CREATED);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound( 'User/Order not found' );
+            return $this->notFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->notAuthorized();
         } catch (QueryException $eQueryException) {
             DB::rollback(); // Rollback transaction on database error
+
             return $this->dbError();
         } catch (Throwable $eTh) {
             DB::rollback(); // Rollback transaction on any other error
+
             return $this->unexpectedError();
         }
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -109,13 +109,14 @@ class OwnerOrdersController extends ApiController
     {
         try {
             $order = Order::where('id', $orderId)->where('user_id', $ownerId)->firstOrFail();
-            $this->isAbleIsOwner('delete', $order, $ownerId); //policy
+            $this->isAbleIsOwner('delete', $order, $ownerId); // policy
             $order->delete();
-            return $this->ok( 'Order deleted successfully', [
-                'status' => Response::HTTP_OK
+
+            return $this->ok('Order deleted successfully', [
+                'status' => Response::HTTP_OK,
             ]);
         } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->notFound( 'User/Order not found' );
+            return $this->notFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->notAuthorized();
         }

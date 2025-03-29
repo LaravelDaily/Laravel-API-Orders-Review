@@ -16,16 +16,18 @@ class CreateOrderStockValidation implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Ensure the value is an array
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             $fail('The Order products must be an array.');
+
             return;
         }
 
         // Check stock for each product
         foreach ($value as $product) {
             // Ensure the product has the required keys
-            if (!isset($product['id']) || !isset($product['quantity'])) {
+            if (! isset($product['id']) || ! isset($product['quantity'])) {
                 $fail('Each product must have an ID and quantity.');
+
                 return;
             }
 
@@ -33,13 +35,15 @@ class CreateOrderStockValidation implements ValidationRule
             $dbProduct = Product::find($product['id']);
 
             // Check if the product exists and has sufficient stock
-            if (!$dbProduct) {
-                $fail('Product with ID ' . $product['id'] . ' does not exist.');
+            if (! $dbProduct) {
+                $fail('Product with ID '.$product['id'].' does not exist.');
+
                 return;
             }
 
             if ($dbProduct->stock < $product['quantity']) {
-                $fail('Insufficient stock for product (' . $dbProduct->name . '). Current stock: ' . $dbProduct->stock . '.');
+                $fail('Insufficient stock for product ('.$dbProduct->name.'). Current stock: '.$dbProduct->stock.'.');
+
                 return;
             }
         }

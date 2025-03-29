@@ -13,23 +13,22 @@ class OrderOwnerController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index( OwnerFilter $filter )
+    public function index(OwnerFilter $filter)
     {
-        return response()->json( new UserCollection(
+        return response()->json(new UserCollection(
             User::with('orders')->filter($filter)->paginate()
-        ), Response::HTTP_OK );
+        ), Response::HTTP_OK);
     }
-
 
     /**
      * Display the specified resource.
      */
     public function show(User $owner)
     {
-        if ( $this->include('orders') ) {
-            return response()->json( new UserResource($owner->load('orders')), Response::HTTP_OK );
+        if ($this->include('orders')) {
+            return response()->json(new UserResource($owner->load('orders')), Response::HTTP_OK);
         }
-        return response()->json( new UserResource($owner), Response::HTTP_OK );
-    }
 
+        return response()->json(new UserResource($owner), Response::HTTP_OK);
+    }
 }

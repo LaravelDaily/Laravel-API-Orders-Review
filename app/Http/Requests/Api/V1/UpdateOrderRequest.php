@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Rules\V1\UpdateOrderStockValidation;
-use Illuminate\Support\Facades\Auth;
 
 class UpdateOrderRequest extends BaseOrderRequest
 {
@@ -28,14 +27,14 @@ class UpdateOrderRequest extends BaseOrderRequest
             'data' => 'required|array',
             'data.attributes' => 'sometimes|array',
             'data.relationships' => 'sometimes|array',
-            
-            'data.attributes.user_id' => 'required|integer|exists:users,id|size:' . $user->id,
+
+            'data.attributes.user_id' => 'required|integer|exists:users,id|size:'.$user->id,
             'data.attributes.name' => 'sometimes|string',
             'data.attributes.description' => 'sometimes|string',
             'data.attributes.status' => 'sometimes|string|in:P,F,C',
             'data.attributes.date' => 'sometimes|date',
 
-            'data.relationships.products' => [ 'sometimes', 'array', new UpdateOrderStockValidation($this->route('order')), ],
+            'data.relationships.products' => ['sometimes', 'array', new UpdateOrderStockValidation($this->route('order'))],
             'data.relationships.products.*' => 'array',
             'data.relationships.products.*.id' => 'sometimes|exists:products,id',
             'data.relationships.products.*.quantity' => 'sometimes|integer|min:1',

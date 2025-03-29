@@ -7,9 +7,9 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
-class OrdersService 
+class OrdersService
 {
-    public function createOrderHandleProducts( BaseOrderRequest $request ) 
+    public function createOrderHandleProducts(BaseOrderRequest $request)
     {
         DB::beginTransaction(); // Start transaction
 
@@ -34,11 +34,11 @@ class OrdersService
         }
 
         DB::commit(); // Commit transaction if everything succeeds
-        
+
         return $order;
     }
 
-    public function updateOrderHandleProducts( BaseOrderRequest $request, Order $order ) 
+    public function updateOrderHandleProducts(BaseOrderRequest $request, Order $order)
     {
         DB::beginTransaction(); // Start transaction
 
@@ -56,7 +56,7 @@ class OrdersService
 
         // Case 1: Detach removed products & increment stock
         foreach ($currentProducts as $productId => $product) {
-            if ( ! $incomingProducts->has($productId) ) { // Detach removed products
+            if (! $incomingProducts->has($productId)) { // Detach removed products
                 $lockedProduct = Product::where('id', $productId)->lockForUpdate()->first();
                 $lockedProduct->increment('stock', $product->pivot->quantity);
                 $order->products()->detach($productId);
@@ -70,7 +70,7 @@ class OrdersService
 
             $lockedProduct = Product::where('id', $productId)->lockForUpdate()->first();
 
-            if ( $currentProducts->has($productId) ) { // Update existing products
+            if ($currentProducts->has($productId)) { // Update existing products
                 $currentQuantity = $currentProducts[$productId]->pivot->quantity;
                 $quantityDifference = $quantity - $currentQuantity;
 
@@ -90,13 +90,13 @@ class OrdersService
         DB::commit(); // Commit transaction if everything succeeds
     }
 
-    public function deleteOrderHandleProducts( Order $order ) 
+    public function deleteOrderHandleProducts(Order $order)
     {
         DB::beginTransaction(); // Start transaction
 
         // Fetch current products with pivot data and lock for update
         $currentProducts = $order->products()->lockForUpdate()->get()->keyBy('id');
-        
+
         // Detach all products
         $order->products()->detach();
 
@@ -111,5 +111,4 @@ class OrdersService
 
         DB::commit(); // Commit transaction if everything succeeds
     }
-
 }

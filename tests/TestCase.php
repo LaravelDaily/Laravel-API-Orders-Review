@@ -12,7 +12,6 @@ abstract class TestCase extends BaseTestCase
         $user = \App\Models\User::factory()->create();
 
         // Generate a Sanctum token for the user
-        return [ $user->createToken('auth_token')->plainTextToken, $user, ];
+        return [$user->createToken('auth_token')->plainTextToken, $user];
     }
-
 }

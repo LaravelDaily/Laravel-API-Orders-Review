@@ -8,26 +8,27 @@ use Illuminate\Http\Request;
 abstract class QueryFilter
 {
     protected $builder = null;
+
     protected $sortable = [];
 
-    public function __construct( 
+    public function __construct(
         protected Request $request,
     ) {}
 
-    public function apply( Builder $builder )
+    public function apply(Builder $builder)
     {
         $this->builder = $builder;
-        
+
         foreach ($this->request->all() as $name => $value) {
             if (method_exists($this, $name)) {
                 $this->$name($value);
             }
         }
-        
+
         return $this->builder;
     }
 
-    protected function filter( array $filters )
+    protected function filter(array $filters)
     {
         foreach ($filters as $name => $value) {
             if (method_exists($this, $name)) {
@@ -38,7 +39,7 @@ abstract class QueryFilter
         return $this->builder;
     }
 
-    protected function sort( $value )
+    protected function sort($value)
     {
         $sortAttributes = explode(',', $value);
 
@@ -49,7 +50,7 @@ abstract class QueryFilter
                 $sortAttribute = substr($sortAttribute, 1);
             }
 
-            if ( ! in_array($sortAttribute, $this->sortable) && ! array_key_exists($sortAttribute, $this->sortable) ) {
+            if (! in_array($sortAttribute, $this->sortable) && ! array_key_exists($sortAttribute, $this->sortable)) {
                 continue;
             }
 
@@ -58,35 +59,34 @@ abstract class QueryFilter
             $this->builder->orderBy($sortColumnName, $sortDirection);
         }
     }
-    
-    public function include( $value )
+
+    public function include($value)
     {
         return $this->builder->with($value);
     }
 
-    public function id( $value )
+    public function id($value)
     {
         return $this->builder->whereIn('id', explode(',', $value));
     }
-    
-    public function sortByDesc( $value )
+
+    public function sortByDesc($value)
     {
         return $this->builder->orderBy($value, 'desc');
     }
 
-    public function sortByAsc( $value )
+    public function sortByAsc($value)
     {
         return $this->builder->orderBy($value, 'asc');
     }
 
-    public function limit( $value )
+    public function limit($value)
     {
         return $this->builder->limit($value);
     }
 
-    public function offset( $value )
+    public function offset($value)
     {
         return $this->builder->offset($value);
     }
-
 }

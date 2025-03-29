@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
 {
-    //public static $wrap = 'order_details';
+    // public static $wrap = 'order_details';
 
     /**
      * Transform the resource into an array.
@@ -29,7 +29,7 @@ class OrderResource extends JsonResource
                 'products' => $this->products,
             ],
             $this->mergeWhen($this->relationLoaded('user'), [
-                'includes' => $this->whenLoaded('user', 
+                'includes' => $this->whenLoaded('user',
                     [
                         'owner' => [
                             'data' => [
@@ -39,7 +39,7 @@ class OrderResource extends JsonResource
                             ],
                             'links' => [
                                 'self' => 'todo', // route('users.show', ['user' => $this->user->id]),
-                            ]
+                            ],
                         ],
                     ],
                 ),

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\Product;
-use App\Models\Order;
 use Tests\TestCase;
 
 class OrderConcurrencyTest extends TestCase
@@ -34,10 +34,10 @@ class OrderConcurrencyTest extends TestCase
                 ],
                 'relationships' => [
                     'products' => [
-                        ['id' => $product->id, 'quantity' => 5, 'price' => 100]
-                    ]
-                ]
-            ]
+                        ['id' => $product->id, 'quantity' => 5, 'price' => 100],
+                    ],
+                ],
+            ],
         ];
 
         // Simulate 3 concurrent requests
@@ -45,7 +45,7 @@ class OrderConcurrencyTest extends TestCase
 
         DB::beginTransaction(); // Start transaction for concurrency simulation
         try {
-            [ $token, , ] = $this->createAuthUserToken();
+            [$token] = $this->createAuthUserToken();
 
             // Simulate concurrent order requests using async HTTP requests
             $responses = [];
@@ -55,19 +55,19 @@ class OrderConcurrencyTest extends TestCase
             // Dispatch multiple HTTP requests
             for ($i = 0; $i < 3; $i++) {
                 $responses[] = $this->withHeaders([
-                    'Authorization' => 'Bearer ' . $token,
+                    'Authorization' => 'Bearer '.$token,
                 ])->postJson('/api/v1/orders', $orderData);
             }
 
             // Process responses
             foreach ($responses as $response) {
-                Log::info("Order Response: " . $response->status());
+                Log::info('Order Response: '.$response->status());
             }
 
             DB::commit(); // Commit if all succeed
         } catch (\Throwable $e) {
             DB::rollback(); // Rollback on failure
-            Log::error("Concurrency Test Failed: " . $e->getMessage());
+            Log::error('Concurrency Test Failed: '.$e->getMessage());
         }
 
         // Check how many orders were actually created
@@ -76,10 +76,8 @@ class OrderConcurrencyTest extends TestCase
 
         // Assertions
         $this->assertLessThanOrEqual(2, $ordersCount, 'Too many orders created.');
-        $this->assertEquals(0, $remainingStock, 'Stock mismatch, should be zero or minimal. Orders created: ' . $ordersCount );
+        $this->assertEquals(0, $remainingStock, 'Stock mismatch, should be zero or minimal. Orders created: '.$ordersCount);
         // output the remaining stock
-        Log::info("Remaining Stock: " . $remainingStock);
+        Log::info('Remaining Stock: '.$remainingStock);
     }
-
-
 }
