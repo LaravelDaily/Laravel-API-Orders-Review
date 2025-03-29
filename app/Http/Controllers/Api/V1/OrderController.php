@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Filters\V1\OrderFilter;
-use App\Http\Requests\Api\V1\ReplaceOrderRequest;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
 use App\Http\Requests\Api\V1\UpdateOrderRequest;
 use App\Http\Resources\V1\OrderCollection;
@@ -84,33 +83,6 @@ class OrderController extends ApiController
      * PATCH
      */
     public function update(UpdateOrderRequest $request, $order_id)
-    {
-        try {
-            $order = Order::findOrFail($order_id);
-            $this->isAble('update', $order); // policy
-            $this->orderService->updateOrderHandleProducts($request, $order);
-
-            return response()->json(new OrderResource($order), Response::HTTP_OK);
-        } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->responseNotFound('Order not found');
-        } catch (AuthorizationException $eAuthorizationException) {
-            return $this->responseNotAuthorized();
-        } catch (QueryException $eQueryException) {
-            DB::rollback(); // Rollback transaction on database error
-
-            return $this->responseDbError();
-        } catch (Throwable $eTh) {
-            DB::rollback(); // Rollback transaction on any other error
-
-            return $this->responseUnexpectedError();
-        }
-    }
-
-    /**
-     * Replace the specified resource in storage.
-     * PUT
-     */
-    public function replace(ReplaceOrderRequest $request, $order_id)
     {
         try {
             $order = Order::findOrFail($order_id);

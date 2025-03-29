@@ -25,20 +25,20 @@ class UpdateOrderRequest extends BaseOrderRequest
 
         return [
             'data' => 'required|array',
-            'data.attributes' => 'sometimes|array',
-            'data.relationships' => 'sometimes|array',
+            'data.attributes' => 'required|array',
+            'data.relationships' => 'required|array',
 
             'data.attributes.user_id' => 'required|integer|exists:users,id|size:'.$user->id,
-            'data.attributes.name' => 'sometimes|string',
-            'data.attributes.description' => 'sometimes|string',
-            'data.attributes.status' => 'sometimes|string|in:P,F,C',
-            'data.attributes.date' => 'sometimes|date',
+            'data.attributes.name' => 'required|string',
+            'data.attributes.description' => 'required|string',
+            'data.attributes.status' => 'required|string|in:P,F,C',
+            'data.attributes.date' => 'required|date',
 
-            'data.relationships.products' => ['sometimes', 'array', new UpdateOrderStockValidation($this->route('order'))],
+            'data.relationships.products' => ['required', 'array', new UpdateOrderStockValidation($this->route('order'))],
             'data.relationships.products.*' => 'array',
-            'data.relationships.products.*.id' => 'sometimes|exists:products,id',
-            'data.relationships.products.*.quantity' => 'sometimes|integer|min:1',
-            'data.relationships.products.*.price' => 'sometimes|numeric|min:0',
+            'data.relationships.products.*.id' => 'required|exists:products,id',
+            'data.relationships.products.*.quantity' => 'required|integer|min:1',
+            'data.relationships.products.*.price' => 'required|numeric|min:0',
         ];
     }
 }

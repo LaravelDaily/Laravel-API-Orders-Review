@@ -12,9 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::apiResource('orders', OrderController::class)->except(['update']);
-    Route::patch('orders/{order}', [OrderController::class, 'update']);
-    Route::put('orders/{order}', [OrderController::class, 'replace']);
+    Route::apiResource('orders', OrderController::class);
 
     Route::get('products', [ProductController::class, 'index']);
 
