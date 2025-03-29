@@ -4,6 +4,7 @@ namespace Tests\OrderTest;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,7 +14,7 @@ class OrderCreateTest extends TestCase
 
     public function test_create_order_successfully()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create a product with sufficient stock
         $product = Product::factory()->create(['stock' => 10]);
@@ -37,9 +38,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a POST request to create the order with the token in the headers
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->postJson('/api/v1/orders', $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->postJson('/api/v1/orders', $orderData);
 
         // Assert the response status is 201 (Created)
         $response->assertStatus(201);
@@ -56,7 +57,7 @@ class OrderCreateTest extends TestCase
 
     public function test_create_order_fails_due_to_insufficient_stock()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create a product with low stock
         $product = Product::factory()->create(['stock' => 2]);
@@ -80,9 +81,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a POST request to create the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->postJson('/api/v1/orders', $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->postJson('/api/v1/orders', $orderData);
 
         // Assert the response status is 422 (Unprocessable Entity)
         $response->assertStatus(422);
@@ -98,7 +99,7 @@ class OrderCreateTest extends TestCase
 
     public function test_create_order_with_zero_quantity()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create a product
         $product = Product::factory()->create(['stock' => 10]);
@@ -122,9 +123,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a POST request to create the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->postJson('/api/v1/orders', $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->postJson('/api/v1/orders', $orderData);
 
         // Assert the response status is 422 (Unprocessable Entity)
         $response->assertStatus(422);
@@ -132,7 +133,7 @@ class OrderCreateTest extends TestCase
 
     public function test_create_order_with_multiple_products()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create products with sufficient stock
         $product1 = Product::factory()->create(['stock' => 10]);
@@ -158,9 +159,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a POST request to create the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->postJson('/api/v1/orders', $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->postJson('/api/v1/orders', $orderData);
 
         // Assert the response status is 201 (Created)
         $response->assertStatus(201);
@@ -172,7 +173,7 @@ class OrderCreateTest extends TestCase
 
     public function test_update_order_with_multiple_products()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create products with sufficient stock
         $product1 = Product::factory()->create(['stock' => 10]);
@@ -204,9 +205,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a PUT request to update the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->putJson("/api/v1/orders/{$order->id}", $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->putJson("/api/v1/orders/{$order->id}", $orderData);
 
         // Assert the response status is 200 (OK)
         $response->assertStatus(200);
@@ -218,7 +219,7 @@ class OrderCreateTest extends TestCase
 
     public function test_update_order_successfully()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();;
 
         // Create a product with sufficient stock
         $product = Product::factory()->create(['stock' => 10]);
@@ -247,9 +248,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a PUT request to update the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->putJson("/api/v1/orders/{$order->id}", $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->putJson("/api/v1/orders/{$order->id}", $orderData);
 
         // Assert the response status is 200 (OK)
         $response->assertStatus(200);
@@ -266,7 +267,7 @@ class OrderCreateTest extends TestCase
 
     public function test_update_order_fails_due_to_insufficient_stock()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create a product with low stock
         $product = Product::factory()->create(['stock' => 2]);
@@ -295,9 +296,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a PUT request to update the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->putJson("/api/v1/orders/{$order->id}", $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->putJson("/api/v1/orders/{$order->id}", $orderData);
 
         // Assert the response status is 422 (Unprocessable Entity)
         $response->assertStatus(422);
@@ -308,7 +309,7 @@ class OrderCreateTest extends TestCase
 
     public function test_update_order_with_invalid_product_id()
     {
-        [$token, $user] = $this->createAuthUserToken();
+        $user = User::factory()->create();
 
         // Create an order
         $order = Order::factory()->create();
@@ -333,9 +334,9 @@ class OrderCreateTest extends TestCase
         ];
 
         // Send a PUT request to update the order
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$token,
-        ])->putJson("/api/v1/orders/{$order->id}", $orderData);
+        $response = $this
+            ->actingAs($user)
+            ->putJson("/api/v1/orders/{$order->id}", $orderData);
 
         // Assert the response status is 422 (Unprocessable Entity)
         $response->assertStatus(422);

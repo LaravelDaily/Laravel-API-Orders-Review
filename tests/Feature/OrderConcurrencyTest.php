@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,8 @@ class OrderConcurrencyTest extends TestCase
 
     public function test_concurrent_orders_handle_stock_correctly()
     {
+        $user = User::factory()->create();
+
         // Create a product with limited stock
         $product = Product::factory()->create([
             'name' => 'Test Product',
@@ -26,7 +29,7 @@ class OrderConcurrencyTest extends TestCase
         $orderData = [
             'data' => [
                 'attributes' => [
-                    'user_id' => 1,
+                    'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
                     'status' => 'P',
@@ -45,8 +48,6 @@ class OrderConcurrencyTest extends TestCase
 
         DB::beginTransaction(); // Start transaction for concurrency simulation
         try {
-            [$token] = $this->createAuthUserToken();
-
             // Simulate concurrent order requests using async HTTP requests
             $responses = [];
 
@@ -54,9 +55,7 @@ class OrderConcurrencyTest extends TestCase
 
             // Dispatch multiple HTTP requests
             for ($i = 0; $i < 3; $i++) {
-                $responses[] = $this->withHeaders([
-                    'Authorization' => 'Bearer '.$token,
-                ])->postJson('/api/v1/orders', $orderData);
+                $responses[] = $this->actingAs($user)->postJson('/api/v1/orders', $orderData);
             }
 
             // Process responses
