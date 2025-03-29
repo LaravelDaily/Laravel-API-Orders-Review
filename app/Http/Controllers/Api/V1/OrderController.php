@@ -143,9 +143,7 @@ class OrderController extends ApiController
             $this->isAble('delete', $order); // policy
             $this->orderService->deleteOrderHandleProducts($order);
 
-            return $this->ok('Order deleted successfully', [
-                'status' => Response::HTTP_OK,
-            ]);
+            return $this->success('Order deleted successfully');
         } catch (ModelNotFoundException $eModelNotFound) {
             return $this->notFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {

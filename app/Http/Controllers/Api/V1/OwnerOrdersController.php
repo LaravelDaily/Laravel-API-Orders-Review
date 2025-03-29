@@ -112,9 +112,7 @@ class OwnerOrdersController extends ApiController
             $this->isAbleIsOwner('delete', $order, $ownerId); // policy
             $order->delete();
 
-            return $this->ok('Order deleted successfully', [
-                'status' => Response::HTTP_OK,
-            ]);
+            return $this->success('Order deleted successfully');
         } catch (ModelNotFoundException $eModelNotFound) {
             return $this->notFound('User/Order not found');
         } catch (AuthorizationException $eAuthorizationException) {

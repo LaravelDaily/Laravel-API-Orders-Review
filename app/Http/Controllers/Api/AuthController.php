@@ -29,7 +29,7 @@ class AuthController extends Controller
         $user = User::firstWhere('email', $request->email);
         $token = $user?->createToken('authToken', Abilities::getAbilities($user), now()->addHours(8))->plainTextToken;
 
-        return $this->ok(
+        return $this->success(
             'Authenticated',
             [
                 // 'user' => $user,
@@ -42,6 +42,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->ok('Logged out');
+        return $this->success('Logged out');
     }
 }
