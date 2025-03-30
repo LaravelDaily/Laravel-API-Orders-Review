@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -32,7 +33,7 @@ class OrderConcurrencyTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [

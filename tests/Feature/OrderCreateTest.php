@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -26,7 +27,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -37,7 +38,7 @@ class OrderCreateTest extends TestCase
             ],
         ];
 
-        // Send a POST request to create the order with the token in the headers
+        // Send a POST request to create the order
         $response = $this
             ->actingAs($user)
             ->postJson('/api/v1/orders', $orderData);
@@ -55,6 +56,39 @@ class OrderCreateTest extends TestCase
         $this->assertEquals(5, $product->fresh()->stock);
     }
 
+    public function test_create_order_fails_with_incorrect_status()
+    {
+        $user = User::factory()->create();
+
+        // Create a product with sufficient stock
+        $product = Product::factory()->create(['stock' => 10]);
+
+        // Define payload for the new order
+        $orderData = [
+            'data' => [
+                'attributes' => [
+                    'user_id' => $user->id,
+                    'name' => 'Test Order',
+                    'description' => 'Test Order Description',
+                    'status' => 'ABC', // status not from the OrderStatus Enum
+                    'date' => now()->toDateString(),
+                ],
+                'relationships' => [
+                    'products' => [
+                        ['id' => $product->id, 'quantity' => 5, 'price' => 100],
+                    ],
+                ],
+            ],
+        ];
+
+        // Send a POST request to create the order
+        $response = $this
+            ->actingAs($user)
+            ->postJson('/api/v1/orders', $orderData);
+
+        $response->assertStatus(422);
+    }
+
     public function test_create_order_fails_due_to_insufficient_stock()
     {
         $user = User::factory()->create();
@@ -69,7 +103,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -111,7 +145,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -146,7 +180,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -192,7 +226,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -236,7 +270,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Updated Order Name',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -284,7 +318,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Updated Order Name',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [
@@ -322,7 +356,7 @@ class OrderCreateTest extends TestCase
                     'user_id' => $user->id,
                     'name' => 'Test Order',
                     'description' => 'Test Order Description',
-                    'status' => 'P',
+                    'status' => OrderStatus::PENDING->value,
                     'date' => now()->toDateString(),
                 ],
                 'relationships' => [

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Enums\OrderStatus;
 use App\Rules\V1\UpdateOrderStockValidation;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderRequest extends BaseOrderRequest
 {
@@ -31,7 +33,7 @@ class UpdateOrderRequest extends BaseOrderRequest
             'data.attributes.user_id' => 'required|integer|exists:users,id|size:'.$user->id,
             'data.attributes.name' => 'required|string',
             'data.attributes.description' => 'required|string',
-            'data.attributes.status' => 'required|string|in:P,F,C',
+            'data.attributes.status' => ['required', 'string', Rule::enum(OrderStatus::class)],
             'data.attributes.date' => 'required|date',
 
             'data.relationships.products' => ['required', 'array', new UpdateOrderStockValidation($this->route('order'))],
