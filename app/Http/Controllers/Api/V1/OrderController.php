@@ -38,10 +38,9 @@ class OrderController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show($order_id)
+    public function show(Order $order)
     {
         try {
-            $order = Order::findOrFail($order_id);
             $this->isAble('view', $order); // policy
 
             if ($this->include('user')) {
@@ -51,8 +50,6 @@ class OrderController extends ApiController
             $order->load('products');
 
             return new OrderResource($order);
-        } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->responseNotAuthorized();
         }
@@ -82,16 +79,13 @@ class OrderController extends ApiController
      * Update the specified resource in storage.
      * PATCH
      */
-    public function update(UpdateOrderRequest $request, $order_id)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
         try {
-            $order = Order::findOrFail($order_id);
             $this->isAble('update', $order); // policy
             $this->orderService->updateOrderHandleProducts($request, $order);
 
             return response()->json(new OrderResource($order), Response::HTTP_OK);
-        } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->responseNotAuthorized();
         } catch (QueryException $eQueryException) {
@@ -108,16 +102,13 @@ class OrderController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($order_id)
+    public function destroy(Order $order)
     {
         try {
-            $order = Order::findOrFail($order_id);
             $this->isAble('delete', $order); // policy
             $this->orderService->deleteOrderHandleProducts($order);
 
             return $this->responseSuccess('Order deleted successfully');
-        } catch (ModelNotFoundException $eModelNotFound) {
-            return $this->responseNotFound('Order not found');
         } catch (AuthorizationException $eAuthorizationException) {
             return $this->responseNotAuthorized();
         }

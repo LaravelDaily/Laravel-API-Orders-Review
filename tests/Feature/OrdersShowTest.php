@@ -35,4 +35,18 @@ class OrdersShowTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_returns_404_for_non_existing_order()
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->getJson('/api/v1/orders/999');
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'errors' => 'Order not found'
+            ]);
+    }
 }

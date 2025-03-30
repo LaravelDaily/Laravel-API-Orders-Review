@@ -10,7 +10,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class UpdateOrderStockValidation implements ValidationRule
 {
     public function __construct(
-        protected $order_id
+        protected Order $order,
     ) {}
 
     /**
@@ -27,7 +27,7 @@ class UpdateOrderStockValidation implements ValidationRule
             return;
         }
 
-        $order = Order::findOrFail($this->order_id)?->load('products');
+        $order = Order::findOrFail($this->order->id)?->load('products');
 
         // Check stock for each product
         foreach ($value as $product) {
