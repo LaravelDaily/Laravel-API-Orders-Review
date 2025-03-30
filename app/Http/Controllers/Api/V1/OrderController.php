@@ -40,19 +40,15 @@ class OrderController extends ApiController
      */
     public function show(Order $order)
     {
-        try {
-            $this->isAble('view', $order); // policy
+        $this->isAble('view', $order); // policy
 
-            if ($this->include('user')) {
-                $order->load('user');
-            }
-
-            $order->load('products');
-
-            return new OrderResource($order);
-        } catch (AuthorizationException $eAuthorizationException) {
-            return $this->responseNotAuthorized();
+        if ($this->include('user')) {
+            $order->load('user');
         }
+
+        $order->load('products');
+
+        return new OrderResource($order);
     }
 
     /**
@@ -86,8 +82,6 @@ class OrderController extends ApiController
             $this->orderService->updateOrderHandleProducts($request, $order);
 
             return response()->json(new OrderResource($order), Response::HTTP_OK);
-        } catch (AuthorizationException $eAuthorizationException) {
-            return $this->responseNotAuthorized();
         } catch (QueryException $eQueryException) {
             DB::rollback(); // Rollback transaction on database error
 
@@ -104,13 +98,9 @@ class OrderController extends ApiController
      */
     public function destroy(Order $order)
     {
-        try {
-            $this->isAble('delete', $order); // policy
-            $this->orderService->deleteOrderHandleProducts($order);
+        $this->isAble('delete', $order); // policy
+        $this->orderService->deleteOrderHandleProducts($order);
 
-            return $this->responseSuccess('Order deleted successfully');
-        } catch (AuthorizationException $eAuthorizationException) {
-            return $this->responseNotAuthorized();
-        }
+        return $this->responseSuccess('Order deleted successfully');
     }
 }

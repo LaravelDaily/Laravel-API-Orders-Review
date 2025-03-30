@@ -9,7 +9,7 @@ trait ApiResponses
 {
     public function responseNotAuthorized(string $message = 'You are not authorized.'): JsonResponse
     {
-        return $this->responseError($message, Response::HTTP_UNAUTHORIZED);
+        return $this->responseError($message, Response::HTTP_FORBIDDEN);
     }
 
     public function responseNotFound(string $message = 'Not Found.'): JsonResponse

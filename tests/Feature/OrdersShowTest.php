@@ -49,4 +49,20 @@ class OrdersShowTest extends TestCase
                 'errors' => 'Order not found'
             ]);
     }
+
+    public function test_returns_403_for_order_by_other_user()
+    {
+        $user1 = User::factory()->create();
+        $order = Order::factory()->create(['user_id' => $user1->id]);
+
+        $user2 = User::factory()->create();
+        $response = $this
+            ->actingAs($user2)
+            ->getJson('/api/v1/orders/' . $order->id);
+
+        $response->assertStatus(403)
+            ->assertJson([
+                'errors' => 'You are not authorized.'
+            ]);
+    }
 }

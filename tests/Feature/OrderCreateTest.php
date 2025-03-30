@@ -375,4 +375,41 @@ class OrderCreateTest extends TestCase
         // Assert the response status is 422 (Unprocessable Entity)
         $response->assertStatus(422);
     }
+
+    public function test_delete_order_successfully()
+    {
+        $user = User::factory()->create();
+
+        $order = Order::factory()->create();
+        $order->update(['user_id' => $user->id]);
+
+        $response = $this
+            ->actingAs($user)
+            ->deleteJson("/api/v1/orders/{$order->id}");
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseCount('orders', 0);
+    }
+
+    public function test_delete_fails_for_order_by_other_user()
+    {
+        $user1 = User::factory()->create();
+
+        $order = Order::factory()->create();
+        $order->update(['user_id' => $user1->id]);
+
+        $user2 = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user2)
+            ->deleteJson("/api/v1/orders/{$order->id}");
+
+        $response->assertStatus(403)
+            ->assertJson([
+                'errors' => 'You are not authorized.'
+            ]);
+
+        $this->assertDatabaseCount('orders', 1);
+    }
 }

@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+        $exceptions->renderable(function (NotFoundHttpException $e) {
             $previous = $e->getPrevious();
 
             if ($previous instanceof ModelNotFoundException) {
@@ -27,5 +29,12 @@ return Application::configure(basePath: dirname(__DIR__))
                     'status' => Response::HTTP_NOT_FOUND,
                 ], Response::HTTP_NOT_FOUND);
             }
+        });
+
+        $exceptions->renderable(function (AccessDeniedHttpException $e) {
+            return response()->json([
+                'errors' => 'You are not authorized.',
+                'status' => Response::HTTP_FORBIDDEN,
+            ], Response::HTTP_FORBIDDEN);
         });
     })->create();
