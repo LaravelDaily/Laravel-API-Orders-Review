@@ -9,6 +9,7 @@ use App\Permissions\V1\Abilities;
 use App\Traits\V1\ApiResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -20,10 +21,10 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (! Auth::attempt($credentials)) {
-            return $this->responseError([
+            throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
                 'password' => ['The provided credentials are incorrect.'],
-            ], 401);
+            ]);
         }
 
         $user = User::firstWhere('email', $request->email);

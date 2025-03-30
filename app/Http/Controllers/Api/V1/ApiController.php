@@ -3,17 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Traits\V1\ApiResponses;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\JsonResponse;
 
 class ApiController extends Controller
 {
-    use ApiResponses;
     use AuthorizesRequests;
-
-    protected $policyClass;
 
     public function include(string $relationships): bool
     {
@@ -28,21 +23,12 @@ class ApiController extends Controller
         return in_array(strtolower($relationships), $includes);
     }
 
-    public function isAble($ability, $model)
+    protected function responseSuccess(string $message, array $data = [], int $statusCode = 200): JsonResponse
     {
-        return Gate::authorize($ability, [$model, $this->policyClass]);
-    }
-
-    public function authIsOwner($ownerId)
-    {
-        $owner = User::findOrFail($ownerId);
-        $this->authorize('authIsOwner', $owner); // policy
-    }
-
-    public function isAbleIsOwner($ability, $model, $ownerId)
-    {
-        $this->authIsOwner($ownerId);
-
-        return $this->isAble($ability, $model);
+        return response()->json([
+            'data' => $data,
+            'message' => $message,
+            'status' => $statusCode,
+        ], $statusCode);
     }
 }
