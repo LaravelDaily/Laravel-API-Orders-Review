@@ -13,6 +13,7 @@ class OrderPolicy
      */
     public function viewAny(User $authUser): bool
     {
+        // TODO: implement isAdmin logic later
         return $authUser->id === 1;
     }
 
