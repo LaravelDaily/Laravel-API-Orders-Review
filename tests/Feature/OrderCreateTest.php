@@ -214,8 +214,7 @@ class OrderCreateTest extends TestCase
         $product2 = Product::factory()->create(['stock' => 15]);
 
         // Create an order with the products
-        $order = Order::factory()->create();
-        $order->update(['user_id' => $user->id]);
+        $order = Order::factory()->create(['user_id' => $user->id]);
         $order->products()->attach($product1->id, ['quantity' => 3, 'price' => 100]);
         $order->products()->attach($product2->id, ['quantity' => 5, 'price' => 100]);
 
@@ -259,8 +258,7 @@ class OrderCreateTest extends TestCase
         $product = Product::factory()->create(['stock' => 10]);
 
         // Create an order with the product
-        $order = Order::factory()->create();
-        $order->update(['user_id' => $user->id]);
+        $order = Order::factory()->create(['user_id' => $user->id]);
         $order->products()->attach($product->id, ['quantity' => 3, 'price' => 100]);
 
         // Data to update the order
@@ -307,8 +305,7 @@ class OrderCreateTest extends TestCase
         $product = Product::factory()->create(['stock' => 2]);
 
         // Create an order with the product
-        $order = Order::factory()->create();
-        $order->update(['user_id' => $user->id]);
+        $order = Order::factory()->create(['user_id' => $user->id]);
         $order->products()->attach($product->id, ['quantity' => 3, 'price' => 100]);
 
         // Data to update the order (new quantity exceeds stock)
@@ -346,8 +343,7 @@ class OrderCreateTest extends TestCase
         $user = User::factory()->create();
 
         // Create an order
-        $order = Order::factory()->create();
-        $order->update(['user_id' => $user->id]);
+        $order = Order::factory()->create(['user_id' => $user->id]);
 
         // Data to update the order with an invalid product ID
         $orderData = [
@@ -380,8 +376,7 @@ class OrderCreateTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $order = Order::factory()->create();
-        $order->update(['user_id' => $user->id]);
+        $order = Order::factory()->create(['user_id' => $user->id]);
 
         $response = $this
             ->actingAs($user)
@@ -396,8 +391,7 @@ class OrderCreateTest extends TestCase
     {
         $user1 = User::factory()->create();
 
-        $order = Order::factory()->create();
-        $order->update(['user_id' => $user1->id]);
+        $order = Order::factory()->create(['user_id' => $user1->id]);
 
         $user2 = User::factory()->create();
 
