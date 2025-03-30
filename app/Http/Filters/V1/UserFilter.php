@@ -2,7 +2,7 @@
 
 namespace App\Http\Filters\V1;
 
-class OwnerFilter extends QueryFilter
+class UserFilter extends QueryFilter
 {
     protected $sortable = [
         'id',

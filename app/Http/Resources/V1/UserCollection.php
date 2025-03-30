@@ -17,7 +17,7 @@ class UserCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'links' => [
-                'self' => route('owners.index'),
+                'self' => route('users.index'),
             ],
             'meta' => [
                 'version' => '0.1.0',

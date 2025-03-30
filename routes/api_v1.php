@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\OrderController;
-use App\Http\Controllers\Api\V1\OrderOwnerController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\OwnerOrdersController;
 use App\Http\Controllers\Api\V1\ProductController;
 use Illuminate\Http\Request;
@@ -16,5 +16,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('products', [ProductController::class, 'index']);
 
-    Route::apiResource('owners', OrderOwnerController::class);
+    Route::apiResource('users', UserController::class);
 });

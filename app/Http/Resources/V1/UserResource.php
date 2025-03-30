@@ -31,7 +31,7 @@ class UserResource extends JsonResource
                 'orders' => new OrderCollection($this->whenLoaded('orders')),
             ],
             'links' => [
-                'self' => route('owners.show', ['owner' => $this->id]),
+                'self' => route('users.show', ['user' => $this->id]),
             ],
         ];
     }
