@@ -9,11 +9,7 @@ use App\Http\Resources\V1\OrderCollection;
 use App\Http\Resources\V1\OrderResource;
 use App\Models\Order;
 use App\Services\V1\OrdersService;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Throwable;
 
 class OrderController extends ApiController
 {
@@ -58,7 +54,7 @@ class OrderController extends ApiController
 
         $order = $this->orderService->createOrderHandleProducts($request);
 
-        return response()->json(new OrderResource($order), Response::HTTP_CREATED);
+        return new OrderResource($order);
     }
 
     /**
@@ -71,7 +67,7 @@ class OrderController extends ApiController
 
         $this->orderService->updateOrderHandleProducts($request, $order);
 
-        return response()->json(new OrderResource($order), Response::HTTP_OK);
+        return new OrderResource($order);
     }
 
     /**
@@ -80,6 +76,7 @@ class OrderController extends ApiController
     public function destroy(Order $order)
     {
         Gate::authorize('delete', $order);
+
         $this->orderService->deleteOrderHandleProducts($order);
 
         return $this->responseSuccess('Order deleted successfully');
