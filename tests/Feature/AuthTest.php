@@ -28,8 +28,8 @@ class AuthTest extends TestCase
             ->assertJsonStructure([
                 'message',
                 'data' => [
-                    'token'
-                ]
+                    'token',
+                ],
             ]);
     }
 
@@ -68,12 +68,12 @@ class AuthTest extends TestCase
         $token = $user->createToken('authToken', Abilities::getAbilities($user), now()->addHours(8))->plainTextToken;
 
         $response = $this
-            ->withHeader('Authorization', 'Bearer ' . $token)
+            ->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/logout');
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Logged out'
+                'message' => 'Logged out',
             ]);
     }
-} 
+}

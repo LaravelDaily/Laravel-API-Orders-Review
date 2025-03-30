@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\OrderController;
-use App\Http\Controllers\Api\V1\UserController;
-use App\Http\Controllers\Api\V1\OwnerOrdersController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

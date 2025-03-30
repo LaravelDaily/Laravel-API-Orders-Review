@@ -27,7 +27,7 @@ class UserTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->getJson('/api/v1/users/' . $user->id);
+            ->getJson('/api/v1/users/'.$user->id);
 
         $response->assertStatus(200);
     }

@@ -30,7 +30,7 @@ class OrdersShowTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->getJson('/api/v1/orders/' . $order->id);
+            ->getJson('/api/v1/orders/'.$order->id);
 
         $response->assertStatus(200);
     }
@@ -45,7 +45,7 @@ class OrdersShowTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson([
-                'errors' => 'Order not found'
+                'errors' => 'Order not found',
             ]);
     }
 
@@ -57,11 +57,11 @@ class OrdersShowTest extends TestCase
         $user2 = User::factory()->create();
         $response = $this
             ->actingAs($user2)
-            ->getJson('/api/v1/orders/' . $order->id);
+            ->getJson('/api/v1/orders/'.$order->id);
 
         $response->assertStatus(403)
             ->assertJson([
-                'errors' => 'You are not authorized.'
+                'errors' => 'You are not authorized.',
             ]);
     }
 }

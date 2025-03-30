@@ -252,7 +252,7 @@ class OrderCreateTest extends TestCase
 
     public function test_update_order_successfully()
     {
-        $user = User::factory()->create();;
+        $user = User::factory()->create();
 
         // Create a product with sufficient stock
         $product = Product::factory()->create(['stock' => 10]);
@@ -401,7 +401,7 @@ class OrderCreateTest extends TestCase
 
         $response->assertStatus(403)
             ->assertJson([
-                'errors' => 'You are not authorized.'
+                'errors' => 'You are not authorized.',
             ]);
 
         $this->assertDatabaseCount('orders', 1);

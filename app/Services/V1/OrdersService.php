@@ -53,7 +53,7 @@ class OrdersService
 
             // Case 1: Detach removed products & increment stock
             foreach ($currentProducts as $productId => $product) {
-                if (!$incomingProducts->has($productId)) { // Detach removed products
+                if (! $incomingProducts->has($productId)) { // Detach removed products
                     $lockedProduct = Product::where('id', $productId)->lockForUpdate()->first();
                     $lockedProduct->increment('stock', $product->pivot->quantity);
                     $order->products()->detach($productId);
