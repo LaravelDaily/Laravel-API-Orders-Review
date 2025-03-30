@@ -18,8 +18,6 @@ use Throwable;
 
 class OrderController extends ApiController
 {
-    protected $policyClass = OrderPolicy::class;
-
     public function __construct(
         protected OrdersService $orderService
     ) {}
