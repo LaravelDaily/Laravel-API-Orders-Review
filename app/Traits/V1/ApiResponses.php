@@ -17,16 +17,6 @@ trait ApiResponses
         return $this->responseError($message, Response::HTTP_NOT_FOUND);
     }
 
-    public function responseUnexpectedError(string $message = 'An unexpected error occurred.'): JsonResponse
-    {
-        return $this->responseError($message);
-    }
-
-    public function responseDbError(string $message = 'Database error.'): JsonResponse
-    {
-        return $this->responseError($message);
-    }
-
     protected function responseSuccess(string $message, array $data = [], int $statusCode = 200): JsonResponse
     {
         return response()->json([
